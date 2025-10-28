@@ -26,8 +26,8 @@ function InstallPrompt() {
           <p className="mb-2">To install this app on your iOS device:</p>
           <ol className="list-decimal list-inside space-y-1">
             <li>Tap the Share button</li>
-            <li>Scroll down and tap "Add to Home Screen"</li>
-            <li>Tap "Add" in the top right corner</li>
+            <li>Scroll down and tap &quot;Add to Home Screen&quot;</li>
+            <li>Tap &quot;Add&quot; in the top right corner</li>
           </ol>
         </div>
       ) : (
