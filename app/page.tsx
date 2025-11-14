@@ -1,10 +1,5 @@
-import Image from "next/image";
+import MeditationTimer from '@/components/meditation-timer';
 
 export default function Home() {
-  return (
-   <div>
-    test
-   </div>
-    
-  );
+  return <MeditationTimer />;
 }
