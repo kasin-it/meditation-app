@@ -1,7 +1,7 @@
 export type BreathingExerciseCallbackType = (props: {
   currentBreathingExerciseTimer: number;
+  timeToStepEnd: number;
   currentBreathingExerciseStep: BreathingExerciseStep;
-  timeToChangeStep: number;
   isFinished: boolean;
   isRunning: boolean;
 }) => void;

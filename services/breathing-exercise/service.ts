@@ -9,21 +9,23 @@ export class BreathingExerciseService {
   private isExerciseFinished: boolean = false;
   private isExerciseRunning: boolean = false;
   private callbacks: BreathingExerciseCallbackType[] = [];
+  private stepsWithTimeToEndStep: Record<number, number> = {};
 
   constructor(exercise: BreathingExercise) {
     if (exercise.exerciseSteps.length === 0) {
       throw new Error('Exercise must have at least one step');
     }
     this.exercise = exercise;
-    this.exerciseTotalDuration = this.getDurationUntilStepIndex(exercise.exerciseSteps.length);
-  }
+    this.exerciseTotalDuration = this.exercise.exerciseSteps.reduce((acc, step) => acc + step.duration, 0);
 
-  getDurationUntilStepIndex(stepIndex: number): number {
-    return (
-      this.exercise?.exerciseSteps
-        .slice(0, stepIndex)
-        .reduce((acc, step) => acc + step.duration, 0) ?? 0
-    );
+    this.stepsWithTimeToEndStep = this.exercise.exerciseSteps.reduce(
+      (acc, step, index) => {
+        acc.accumulatedTime += step.duration;
+        acc.record[index] = acc.accumulatedTime;
+        return acc;
+      },
+      { record: {} as Record<number, number>, accumulatedTime: 0 },
+    ).record;
   }
 
   private checkIfExerciseIsSet() {
@@ -44,7 +46,7 @@ export class BreathingExerciseService {
     this.isExerciseRunning = true;
 
     this.exerciseTimerInterval = setInterval(() => {
-      this.currentExerciseTimer += 100;
+      this.currentExerciseTimer += 1000;
       // Update the exercise state
       this.updateExerciseState();
       // Check if the exercise is finished
@@ -55,7 +57,7 @@ export class BreathingExerciseService {
         this.notify();
         return;
       }
-    }, 100);
+    }, 1000);
   }
 
   private checkIfTheExerciseIsFinished() {
@@ -63,23 +65,14 @@ export class BreathingExerciseService {
   }
 
   private updateExerciseState() {
-    // LAST STEP
-    if (this.currentStepIndex === this.exercise!.exerciseSteps.length - 1) {
-      return;
+
+    if (this.currentStepIndex < this.exercise!.exerciseSteps.length - 1) {
+      const timeToEndCurrentStep = this.stepsWithTimeToEndStep[this.currentStepIndex];
+      if (this.currentExerciseTimer >= timeToEndCurrentStep) {
+        this.currentStepIndex++;
+      }
     }
-
-    let durationUntilNextStep = this.getDurationUntilStepIndex(this.currentStepIndex + 1);
-
-    // UPDATE STEP
-    if (this.currentExerciseTimer >= durationUntilNextStep) {
-      this.currentStepIndex++;
-      this.notify();
-      return;
-    }
-
-    // IF NOT TIME TO CHANGE STEP, CALCULATE DURATION OF THE CURRENT STEP
     this.notify();
-    return;
   }
 
   stopExercise() {
@@ -101,14 +94,6 @@ export class BreathingExerciseService {
     this.notify();
   }
 
-  private getTimeToChangeStep() {
-    if (this.currentStepIndex === this.exercise!.exerciseSteps.length - 1) {
-      return this.exerciseTotalDuration;
-    }
-
-    return this.getDurationUntilStepIndex(this.currentStepIndex + 1);
-  }
-
   subscribe(callback: BreathingExerciseCallbackType) {
     this.callbacks.push(callback);
     return () => {
@@ -119,8 +104,8 @@ export class BreathingExerciseService {
   notify() {
     this.callbacks.forEach((callback) => {
       callback({
-        timeToChangeStep: this.getTimeToChangeStep(),
         currentBreathingExerciseTimer: this.currentExerciseTimer,
+        timeToStepEnd: this.stepsWithTimeToEndStep[this.currentStepIndex] - this.currentExerciseTimer,
         currentBreathingExerciseStep: this.exercise!.exerciseSteps[this.currentStepIndex],
         isFinished: this.isExerciseFinished,
         isRunning: this.isExerciseRunning,

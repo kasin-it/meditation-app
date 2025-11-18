@@ -5,7 +5,7 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 import { useBreathingExercise } from '@/hooks/use-breathing-excercise';
 
 export default function MeditationTimer() {
-  const { onStart, remainingTime, onStop, onReset, isProcessing, currentStep, timeToChangeStep } =
+  const { onStart, remainingTime, onStop, onReset, isProcessing, currentStep, timeToStepEnd } =
     useBreathingExercise();
 
   const getBreathText = () => {
@@ -65,7 +65,7 @@ export default function MeditationTimer() {
             {formatTime(remainingTime)}
           </div>
           <div className="text-8xl font-light tabular-nums text-foreground mb-2">
-            {formatTime(timeToChangeStep - remainingTime)}
+            {formatTime(timeToStepEnd)}
           </div>
           <div className="text-center text-sm text-muted-foreground uppercase tracking-wider">
             {isProcessing ? 'In Progress' : 'Paused'}

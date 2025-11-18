@@ -4,10 +4,10 @@ import { BreathingExercise, BreathingExerciseStep } from '@/services/breathing-e
 
 export function useBreathingExercise() {
   const [remainingTime, setRemainingTime] = useState(0);
+  const [timeToStepEnd, setTimeToStepEnd] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [currentStep, setCurrentStep] = useState<BreathingExerciseStep | null>(null);
-  const [timeToChangeStep, setTimeToChangeStep] = useState(0);
   const serviceRef = useRef<BreathingExerciseService | null>(null);
 
   // Initialize the service and set up a default breathing exercise
@@ -25,8 +25,8 @@ export function useBreathingExercise() {
 
     const unsubscribe = serviceRef.current.subscribe((props) => {
       setRemainingTime(props.currentBreathingExerciseTimer);
+      setTimeToStepEnd(props.timeToStepEnd);
       setCurrentStep(props.currentBreathingExerciseStep);
-      setTimeToChangeStep(props.timeToChangeStep);
       setIsFinished(props.isFinished);
       setIsProcessing(props.isRunning);
     });
@@ -60,9 +60,9 @@ export function useBreathingExercise() {
     onStop,
     onReset,
     remainingTime,
+    timeToStepEnd,
     isProcessing,
     currentStep,
-    timeToChangeStep,
     isFinished,
   };
 }
