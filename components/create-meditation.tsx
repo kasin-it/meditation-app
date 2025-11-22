@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Sparkles, Wind, Eye, Infinity as InfinityIcon, Moon, Sun, Cloud } from "lucide-react";
+import { ArrowLeft, Sparkles, Wind, Eye, Infinity as InfinityIcon, Moon, Sun, Cloud } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MeditationMethod, MeditationType } from "./meditation-selection";
+// Removed unused imports: Check, MeditationType
+import { MeditationMethod } from "./meditation-selection";
 
 interface CreateMeditationProps {
   onSave: (method: MeditationMethod) => void;

@@ -2,7 +2,8 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+// Removed unused import: cn
+// import { cn } from "@/lib/utils";
 import { Sparkles, Flame, Clock } from "lucide-react";
 
 // Mock Data Generation
@@ -16,8 +17,9 @@ const generateData = () => {
     const meditated = Math.random() > 0.3;
     // Random positions for "Star Cluster" feel, but kept somewhat ordered
     // We'll arrange them in a rough spiral or wave pattern
-    const angle = i * 0.5; // rad
-    const radius = 20 + i * 2; 
+    // Unused variables removed: angle, radius
+    // const angle = i * 0.5; // rad
+    // const radius = 20 + i * 2; 
     // Just use a grid with jitter for simplicity in SVG
     data.push({
       date,
@@ -133,4 +135,3 @@ export function ConstellationHeatmap() {
     </div>
   );
 }
-

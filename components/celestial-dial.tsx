@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import React, { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Play } from "lucide-react";
 
@@ -17,14 +17,20 @@ const PRESETS = [
 
 export function CelestialDial({ onStart }: CelestialDialProps) {
   const [minutes, setMinutes] = useState(15);
-  const constraintsRef = useRef<HTMLDivElement>(null);
+  // Removed unused ref: constraintsRef
+  // const constraintsRef = useRef<HTMLDivElement>(null);
   const dialRef = useRef<HTMLDivElement>(null);
   
   // Calculate angle based on minutes (0-60)
   // 0 mins = -90deg (top), 60 mins = 270deg
   const angle = (minutes / 60) * 360;
   
-  const handleDrag = (event: any, info: any) => {
+  // Fixed type for event and info using explicit types if possible or minimal `any` for now since PanInfo is from Framer Motion
+  // Importing PanInfo from framer-motion
+  // But to keep it simple without extra imports if they are not available easily, using 'any' is what caused the error.
+  // I should try to import PanInfo or use a simpler type like `MouseEvent | TouchEvent | PointerEvent` and `{ point: { x: number, y: number } }`
+  
+  const handleDrag = (_event: MouseEvent | TouchEvent | PointerEvent, info: { point: { x: number; y: number } }) => {
     if (!dialRef.current) return;
     
     const rect = dialRef.current.getBoundingClientRect();
@@ -154,4 +160,3 @@ export function CelestialDial({ onStart }: CelestialDialProps) {
     </div>
   );
 }
-
