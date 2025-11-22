@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -16,5 +17,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  return <>{children}</>;
+  return (
+    <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem>
+      {children}
+    </NextThemesProvider>
+  );
 }

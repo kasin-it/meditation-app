@@ -1,22 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cinzel, Quicksand } from "next/font/google";
 import "./globals.css";
-import {Providers} from "@/components/providers";
+import { Providers } from "@/components/providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
   subsets: ["latin"],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
   subsets: ["latin"],
+  display: 'swap',
 });
 
-const APP_NAME = "Meditation App";
-const APP_DEFAULT_TITLE = "Meditation App";
-const APP_TITLE_TEMPLATE = "%s - Meditation App";
-const APP_DESCRIPTION = "Your personal meditation and mindfulness companion";
+const APP_NAME = "The Ether";
+const APP_DEFAULT_TITLE = "The Ether - Spiritual Meditation";
+const APP_TITLE_TEMPLATE = "%s - The Ether";
+const APP_DESCRIPTION = "Digital Sacred Geometry. A vessel for serenity, fluidity, depth, and mystery.";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: APP_DEFAULT_TITLE,
   },
   formatDetection: {
@@ -54,7 +56,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: "#121216",
 };
 
 export default function RootLayout({
@@ -63,12 +65,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${cinzel.variable} ${quicksand.variable} antialiased bg-background text-foreground font-sans transition-colors duration-1000`}
       >
         <Providers>
-          {children}
+          <main className="min-h-screen relative overflow-hidden selection:bg-primary/30">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

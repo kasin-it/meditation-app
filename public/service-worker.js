@@ -8,6 +8,87 @@ workbox.setConfig({ debug: false });
 workbox.core.skipWaiting();
 workbox.core.clientsClaim();
 
+// --- IDB Helper for Meditation Storage ---
+const DB_NAME = 'meditation-app-db';
+const STORE_NAME = 'custom-methods';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveMethod(method) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put(method);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getMethods() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// --- Virtual API Routes ---
+
+// Handle POST /_api/meditations (Save)
+workbox.routing.registerRoute(
+  ({ url, request }) => url.pathname === '/_api/meditations' && request.method === 'POST',
+  async ({ request }) => {
+    try {
+      const method = await request.json();
+      await saveMethod(method);
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+);
+
+// Handle GET /_api/meditations (List)
+workbox.routing.registerRoute(
+  ({ url, request }) => url.pathname === '/_api/meditations' && request.method === 'GET',
+  async () => {
+    try {
+      const methods = await getMethods();
+      return new Response(JSON.stringify(methods), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+);
+
+// --- Standard Caching ---
+
 // Cache the Google Fonts stylesheets with a stale-while-revalidate strategy
 workbox.routing.registerRoute(
   ({ url }) => url.origin === 'https://fonts.googleapis.com',
@@ -79,4 +160,4 @@ workbox.routing.setCatchHandler(({ event }) => {
   return Response.error();
 });
 
-console.log('Service worker loaded with Workbox!');
+console.log('Service worker loaded with Workbox and custom API!');
