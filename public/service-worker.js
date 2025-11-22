@@ -4,9 +4,17 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox
 // Initialize Workbox
 workbox.setConfig({ debug: false });
 
-// Skip waiting and claim clients immediately
-workbox.core.skipWaiting();
-workbox.core.clientsClaim();
+// --- Important: Claim Clients Immediately ---
+// This ensures the SW takes control of the page as soon as it's activated,
+// allowing it to intercept fetch requests from the very first load.
+self.addEventListener('install', (event) => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 
 // --- IDB Helper for Meditation Storage ---
 const DB_NAME = 'meditation-app-db';
@@ -49,45 +57,52 @@ async function getMethods() {
 }
 
 // --- Virtual API Routes ---
+// We must use a custom handler instead of workbox.routing.registerRoute for the API
+// to ensure it has the highest priority and doesn't get mixed up with navigation routes.
 
-// Handle POST /_api/meditations (Save)
-workbox.routing.registerRoute(
-  ({ url, request }) => url.pathname === '/_api/meditations' && request.method === 'POST',
-  async ({ request }) => {
-    try {
-      const method = await request.json();
-      await saveMethod(method);
-      return new Response(JSON.stringify({ success: true }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // Intercept /_api/meditations
+  if (url.pathname === '/_api/meditations') {
+    if (event.request.method === 'POST') {
+      event.respondWith(async function() {
+        try {
+          const method = await event.request.clone().json();
+          await saveMethod(method);
+          return new Response(JSON.stringify({ success: true }), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }());
+      return;
+    }
+    
+    if (event.request.method === 'GET') {
+      event.respondWith(async function() {
+        try {
+          const methods = await getMethods();
+          return new Response(JSON.stringify(methods), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }());
+      return;
     }
   }
-);
+});
 
-// Handle GET /_api/meditations (List)
-workbox.routing.registerRoute(
-  ({ url, request }) => url.pathname === '/_api/meditations' && request.method === 'GET',
-  async () => {
-    try {
-      const methods = await getMethods();
-      return new Response(JSON.stringify(methods), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-  }
-);
-
-// --- Standard Caching ---
+// --- Standard Caching (Workbox) ---
 
 // Cache the Google Fonts stylesheets with a stale-while-revalidate strategy
 workbox.routing.registerRoute(

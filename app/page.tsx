@@ -36,6 +36,11 @@ export default function Page() {
   const handleCreateSave = async (method: MeditationMethod) => {
     // Save to Service Worker / IDB
     try {
+      // Ensure Service Worker is ready before making the request
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+         await navigator.serviceWorker.ready;
+      }
+      
       await fetch('/_api/meditations', {
         method: 'POST',
         headers: {

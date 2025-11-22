@@ -80,6 +80,11 @@ export function MeditationSelection({ onSelect, onCreate }: MeditationSelectionP
     // Fetch custom methods from Service Worker / IDB
     const fetchCustomMethods = async () => {
       try {
+        // If service workers are supported, wait until ready to ensure interception
+        if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+            await navigator.serviceWorker.ready;
+        }
+
         const res = await fetch('/_api/meditations');
         if (res.ok) {
           const customMethods: MeditationMethod[] = await res.json();
@@ -121,7 +126,7 @@ export function MeditationSelection({ onSelect, onCreate }: MeditationSelectionP
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
               onClick={() => onSelect(method)}
-              className="group relative p-6 rounded-3xl bg-surface/30 backdrop-blur-md border border-white/5 text-left transition-all hover:bg-surface/50 hover:border-white/10"
+              className="group relative p-6 rounded-3xl bg-card/30 backdrop-blur-md border border-white/5 text-left transition-all hover:bg-card/50 hover:border-white/10"
             >
               <div className="flex items-start gap-4">
                 <div className={cn("p-3 rounded-2xl bg-background/50 border border-white/5 group-hover:scale-110 transition-transform duration-500", method.color)}>
