@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cinzel, Quicksand } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { SparklesCore } from "@/components/ui/sparkles";
 
 const cinzel = Cinzel({
   variable: "--font-cinzel",
@@ -67,10 +68,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cinzel.variable} ${quicksand.variable} antialiased bg-background text-foreground font-sans transition-colors duration-1000`}
+        className={`${cinzel.variable} ${quicksand.variable} antialiased bg-[#050507] text-foreground font-sans transition-colors duration-1000`}
       >
         <Providers>
-          <main className="min-h-screen relative overflow-hidden selection:bg-primary/30">
+          <div className="fixed inset-0 z-0 pointer-events-none">
+            <SparklesCore
+              id="tsparticlesfullpage"
+              background="transparent"
+              minSize={0.6}
+              maxSize={1.4}
+              particleDensity={100}
+              className="w-full h-full"
+              particleColor="#FFFFFF"
+            />
+          </div>
+          <main className="min-h-screen relative z-10 overflow-hidden selection:bg-primary/30">
             {children}
           </main>
         </Providers>

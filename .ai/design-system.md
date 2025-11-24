@@ -1,153 +1,82 @@
-Here is the comprehensive Design System documentation for **"The Ether"** Meditation App. This document is structured to be directly handed over to a frontend developer using Next.js, Tailwind CSS, and Framer Motion.
-
-***
-
-# Design System: The Ether
+# Void UI Design System
 
 ## 1. Design Philosophy
-**"Digital Sacred Geometry"**
-The interface should feel less like a tool and more like a vessel. We move away from rigid grids and corporate structures into fluid, organic, and celestial layouts.
-*   **Core Values:** Serenity, Fluidity, Depth, Mystery.
-*   **Visual Metaphor:** Glass floating in a nebula (Dark Mode) / Stones resting on sand (Light Mode).
+**Core Concept:** "Cosmic Mindfulness"
+The Void UI system is designed to minimize cognitive load through the use of deep contrast, negative space, and organic motion. The interface acts as a window into a void, where UI elements mimic bioluminescent light sources in deep space.
+
+**Principles:**
+*   **Absolute Immersion:** No status bars, no chrome. The app owns the pixels.
+*   **OLED First:** Optimized for perfect blacks to blur the device boundaries.
+*   **Visual Silence:** Information is presented only when necessary.
 
 ---
 
 ## 2. Color Palette
+The system relies on a restricted palette to maintain the meditative atmosphere. The primary color serves as the "light source."
 
-We use a semantic color system. In Next.js/Tailwind, these should be defined as CSS variables to handle Light/Dark mode switching seamlessly.
-
-### Dark Mode (The Astral Plane)
-*Used for night meditation and
-
- default deep focus.*
-
-| Semantic Name | Hex Code | Description | Usage |
+| Token Name | Hex Value | Description | Usage |
 |:---|:---|:---|:---|
-| `bg-main` | `#121216` | Deep Void | Main background (Not pure black) |
-| `bg-surface` | `#1E1E24` | Astral Glass | Cards, Modals (with opacity) |
-| `text-primary` | `#EAEAEA` | Starlight | Main Headings, Timer Digits |
-| `text-secondary`| `#A0A0B2` | Mist | Subtitles, Body text |
-| `accent-primary`| `#D4AF37` | Alchemic Gold | Primary Actions, Active States |
-| `accent-glow` | `#D4AF37` | (RGBA 0.4) | Box-shadow glows for active elements |
-
-### Light Mode (The Earth Plane)
-*Used for day meditation and history reviewing.*
-
-| Semantic Name | Hex Code | Description | Usage |
-|:---|:---|:---|:---|
-| `bg-main` | `#F3F2ED` | Warm Sand | Main background (Paper texture feel) |
-| `bg-surface` | `#FFFFFF` | White Stone | Cards, Modals |
-| `text-primary` | `#2C3E50` | Deep Slate | Main Headings |
-| `text-secondary`| `#6B7C93` | River Stone | Subtitles |
-| `accent-primary`| `#6B8E23` | Olive/Sage | Primary Actions |
-| `accent-glow` | `#6B8E23` | (RGBA 0.2) | Soft shadows |
+| `color-bg-deep` | `#050507` | Near-Black | Primary background. Not pure black (`#000`), allowing for subtle star texture depth. |
+| `color-primary-glow` | `#4DEEEA` | Electric Cyan | The core color of the breathing ring and active elements. |
+| `color-text-primary` | `#FFFFFF` | Pure White | Primary text. Used for the main instruction ("INHALE"). |
+| `color-text-secondary` | `#E0E0E0` | Off-White | Secondary data. Used for the timer or subtitles. |
+| `color-overlay-star` | `#FFFFFF` | White (20% Opacity) | Used for the noise/grain texture simulating stars. |
 
 ---
 
 ## 3. Typography
+**Font Family:** *Inter* or *San Francisco (SF Pro)*.
+The typeface must be a geometric sans-serif with neutral tracking.
 
-We mix a mystical Serif for headers with a clean Sans-Serif for data to ensure readability.
+| Style | Weight | Size (rem) | Tracking | Usage |
+|:---|:---|:---|:---|:---|
+| **Display** | Medium (500) | 2.0 | 0.05em | The main action verb ("INHALE"). |
+| **Numeric** | Light (300) | 1.5 | 0.02em | The timer display ("00:04"). |
+| **Body** | Regular (400) | 1.0 | 0.01em | Settings and secondary text. |
 
-### Font Families
-1.  **Display (Headings):** `Cinzel` or `Cormorant Garamond`
-    *   *Vibe:* Ancient, Editorial, Spiritual.
-2.  **UI (Body/Data):** `Quicksand` or `Nunito`
-    *   *Vibe:* Rounded, Friendly, Modern.
+### Typographic Scale
+To ensure harmony, font sizes follow a minor third scale ratio \(r = 1.2\).
+The base size \(S_0\) is 16px.
 
-### Type Scale
-| Level | Font | Size | Weight | Letter Spacing | Usage |
-|:---|:---|:
-
----|:---|:---|:---|
-| **Display XL** | Cinzel | 3.5rem | 400 | `tracking-widest` | Main Timer Countdown |
-| **H1** | Cinzel | 2rem | 600 | `tracking-wide` | Page Titles (The Void, The Sanctuary) |
-| **H2** | Cinzel | 1.5rem | 500 | `tracking-normal`| Section Headers |
-| **Body** | Quicksand| 1rem | 400 | `tracking-normal`| General Text |
-| **Label** | Quicksand| 0.875rem| 600 | `tracking-widest` | Buttons, Metadata, Stats Labels |
+\[ S_n = S_0 \cdot (1.2)^n \]
 
 ---
 
-## 4. Iconography & Imagery
+## 4. Component: The "Halo"
+The central component is the **Halo**, a visual representation of breath capacity. It is not a solid shape, but a light accumulation.
 
-*   **Style:** Thin line weight (1.5px or 2px), SVG based.
-*   **Forms:** Geometric, Celestial, Esoteric.
-*   **Libraries:** Lucide React (customized) or custom SVGs.
-*   **Key Icons:**
-    *   *Home:* A simple Lotus or Enso circle.
-    *   *Stats:* A Constellation map.
-    *   *Settings:* An Eclipse or Third Eye.
-
----
-
-## 5. Layout & Spacing (Tailwind)
-
-*   **Border Radius:**
-    *   Everything is organic. Avoid sharp corners.
-    *   Standard Card: `rounded-2xl` or `rounded-3xl`.
-    *   Buttons: `rounded-full` (Pill shape).
-*   **Glassmorphism (The Glass Effect):**
-    *   To achieve the "Ethereal" look, UI elements (Dock, Cards) use backdrop blur.
-    *   *CSS Class:* `bg-surface/30 backdrop-blur-md border border-white/10`
-
----
-
-## 6. Motion Physics (Framer Motion)
-
-Motion is not just a transition; it is the heartbeat of the app.
-
-### The "Breathing" Preset
-Used for the Timer animation and idle states of floating elements.
-```javascript
-transition: {
-  duration: 4,
-  ease: "easeInOut",
-  repeat: Infinity,
-  repeatType: "mirror"
-}
-```
-
-### The "Heavy Spirit" Preset
-Used for page transitions and opening modals. It should feel like moving through water—slow but responsive.
-```javascript
-transition: {
-  type: "spring",
-  stiffness: 10
-
-0,
-  damping: 20,
-  mass: 1.2
-}
-```
-
----
-
-## 7. Component Architecture
-
-### A. The Orb Button (Primary Action)
-Instead of a rectangular "Start" button.
+### Visual Specs
 *   **Shape:** Perfect Circle.
-*   **Effect:** Slowly pulsing shadow (`box-shadow`).
-*   **Interaction:** `WhileHover` scale up 1.05, `WhileTap` scale down 0.95.
+*   **Fill:** Radial Gradient (Cyan to Transparent).
+*   **Border:** None.
+*   **Shadows:** Multi-layered box-shadows to create the bloom effect.
 
-### B. The Constellation Card (Stats)
-*   **Background:** Transparent with heavy blur.
-*   **Border:** 1px solid with very low opacity (10%).
-*   **Content:** Data points are connected by thin lines (SVG lines) mimicking star charts.
-
-### C. The Celestial Dial (Time Input)
-*   **Input Method:** Circular SVG stroke.
-*   **Handle:** A glowing dot (Sun or Moon).
-*   **Feedback:** Haptic vibration on every 5-minute increment tick.
-
----
-
-## 8. PWA Specifics (Mobile UI)
-
-*   **Safe Areas:** Respect the notch and home indicator.
-    *   `padding-top: env(safe-area-inset-top)`
-    *   `padding-bottom: env(safe-area-inset-bottom)`
-*   **Touch Targets:** Minimum 44x44px for all interactive stars or runes.
-*   **Gestures:**
-    *   *Swipe Down* on the timer screen to cancel/minimize.
-    *   *Swipe Left/Right* to switch between Home and Stats.
-
+**CSS Reference:**
+```css
+.halo-ring {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,0,0,0) 40%, #4DEEEA 100%);
+  box-shadow: 
+    0 0 20px #4DEEEA,     /* Inner Glow */
+    0 0 60px #4DEEEA80,   /* Mid Glow */
+    0 0 100px #4DEEEA33;  /* Outer Atmosphere */
+}
+5. Motion & Physics
+Motion is the primary interaction language. Transitions must mimic organic biology (lungs expanding) rather than mechanical movement.
+The Breathing Curve
+The expansion and contraction of the Halo follows a sinusoidal function, specifically a sine wave modified for a pause at the peaks (holding breath).
+If ( t ) is time in seconds, the scale ( S(t) ) of the ring can be approximated by:
+[ S(t) = 1 + 0.4 \cdot \sin\left(\frac{2\pi t}{T}\right) ]
+Where:
+	•	( T ) is the total duration of one breath cycle (e.g., 8 seconds).	•	( 0.4 ) represents the maximum expansion scale (40% growth).
+Transitions
+	•	Text Fade: Opacity transitions take 800ms.	•	Easing: Custom cubic-bezier for "lungs" effect: ⁠cubic-bezier(0.45, 0, 0.55, 1) (Ease-In-Out).
+6. Layout & Spacing
+The layout utilizes a single central axis (y-axis).
+	•	Vertical Alignment:
+	▪	Halo: Vertically centered (50% from top).	▪	Instructions: Fixed padding from the bottom (approx. 20% from bottom) to prevent thumb obscuration.	•	Safe Areas:
+	▪	Avoid placing elements within 40px of screen edges to maintain the "floating" illusion.
+7. Assets
+	•	Starfield Texture: A transparent PNG or noise shader overlay at 5% opacity is required over the ⁠color-bg-deep to prevent color banding on high-resolution screens.
