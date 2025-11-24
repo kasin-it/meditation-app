@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, RotateCcw, Plus } from "lucide-react";
 
@@ -90,13 +90,13 @@ export default function BreathingTimer() {
   };
 
   // PRIMARY CIRCLE VARIANTS (Constant Heartbeat Pulse)
-  const primaryCircleVariants = {
+  const primaryCircleVariants: Variants = {
     pulse: {
       scale: [1, 1.02, 1],
       opacity: [0.9, 1, 0.9],
       transition: {
         duration: 2,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
         repeat: Infinity,
         repeatType: "mirror" as const,
       },
@@ -109,13 +109,13 @@ export default function BreathingTimer() {
   };
 
   // SECONDARY CIRCLE VARIANTS (Breathing Logic + Irregularity)
-  const secondaryCircleVariants = {
+  const secondaryCircleVariants: Variants = {
     inhale: {
       scale: 1.8,
       opacity: 0.6,
       rotate: 10,
       borderRadius: ["50%", "45%", "50%"],
-      transition: { duration: CYCLE_DURATION, ease: "easeInOut" },
+      transition: { duration: CYCLE_DURATION, ease: "easeInOut" as const },
     },
     "hold-in": {
       scale: [1.8, 1.85, 1.8],
@@ -124,7 +124,7 @@ export default function BreathingTimer() {
       borderRadius: ["50%", "48%", "52%", "50%"],
       transition: {
         duration: CYCLE_DURATION,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
         repeat: Infinity,
         repeatType: "mirror" as const,
       },
@@ -134,7 +134,7 @@ export default function BreathingTimer() {
       opacity: 0.3,
       rotate: 0,
       borderRadius: "50%",
-      transition: { duration: CYCLE_DURATION, ease: "easeInOut" },
+      transition: { duration: CYCLE_DURATION, ease: "easeInOut" as const },
     },
     "hold-out": {
       scale: [1.1, 1.15, 1.1],
@@ -143,7 +143,7 @@ export default function BreathingTimer() {
       borderRadius: ["50%", "52%", "48%", "50%"],
       transition: {
         duration: CYCLE_DURATION,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
         repeat: Infinity,
         repeatType: "mirror" as const,
       },
