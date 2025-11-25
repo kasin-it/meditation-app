@@ -19,14 +19,20 @@ self.addEventListener('activate', (event) => {
 // --- IDB Helper for Meditation Storage ---
 const DB_NAME = 'meditation-app-db';
 const STORE_NAME = 'custom-methods';
+const STATS_STORE_NAME = 'sessions';
+const DB_VERSION = 2;
 
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains(STATS_STORE_NAME)) {
+        // Use autoIncrement key or timestamp as key
+        db.createObjectStore(STATS_STORE_NAME, { keyPath: 'id', autoIncrement: true });
       }
     };
     request.onsuccess = () => resolve(request.result);
@@ -50,6 +56,30 @@ async function getMethods() {
   return new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveSession(session) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STATS_STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STATS_STORE_NAME);
+    // Ensure session has a timestamp if not provided
+    if (!session.date) session.date = new Date().toISOString();
+    store.add(session);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getSessions() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STATS_STORE_NAME, 'readonly');
+    const store = tx.objectStore(STATS_STORE_NAME);
     const request = store.getAll();
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
@@ -88,6 +118,44 @@ self.addEventListener('fetch', (event) => {
         try {
           const methods = await getMethods();
           return new Response(JSON.stringify(methods), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }());
+      return;
+    }
+  }
+
+  // Intercept /_api/stats
+  if (url.pathname === '/_api/stats') {
+    if (event.request.method === 'POST') {
+      event.respondWith(async function() {
+        try {
+          const session = await event.request.clone().json();
+          await saveSession(session);
+          return new Response(JSON.stringify({ success: true }), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }());
+      return;
+    }
+
+    if (event.request.method === 'GET') {
+      event.respondWith(async function() {
+        try {
+          const sessions = await getSessions();
+          return new Response(JSON.stringify(sessions), {
             headers: { 'Content-Type': 'application/json' }
           });
         } catch (error) {

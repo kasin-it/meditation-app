@@ -1,25 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Quicksand } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { SparklesCore } from "@/components/ui/sparkles";
 
-const cinzel = Cinzel({
-  variable: "--font-cinzel",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
-const quicksand = Quicksand({
-  variable: "--font-quicksand",
-  subsets: ["latin"],
-  display: 'swap',
-});
-
-const APP_NAME = "The Ether";
-const APP_DEFAULT_TITLE = "The Ether - Spiritual Meditation";
-const APP_TITLE_TEMPLATE = "%s - The Ether";
-const APP_DESCRIPTION = "Digital Sacred Geometry. A vessel for serenity, fluidity, depth, and mystery.";
+const APP_NAME = "Void";
+const APP_DEFAULT_TITLE = "Void - Cosmic Mindfulness";
+const APP_TITLE_TEMPLATE = "%s - Void";
+const APP_DESCRIPTION = "Absolute immersion. Visual silence.";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -57,7 +51,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#121216",
+  themeColor: "#050507",
 };
 
 export default function RootLayout({
@@ -68,21 +62,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cinzel.variable} ${quicksand.variable} antialiased bg-[#050507] text-foreground font-sans transition-colors duration-1000`}
+        className={`${inter.variable} antialiased bg-[#050507] text-white font-sans selection:bg-[#4DEEEA]/30`}
       >
         <Providers>
+          {/* Sparkles/Starfield */}
           <div className="fixed inset-0 z-0 pointer-events-none">
             <SparklesCore
               id="tsparticlesfullpage"
               background="transparent"
               minSize={0.6}
-              maxSize={1.4}
-              particleDensity={100}
+              maxSize={2}
+              particleDensity={30}
               className="w-full h-full"
               particleColor="#FFFFFF"
             />
           </div>
-          <main className="min-h-screen relative z-10 overflow-hidden selection:bg-primary/30">
+
+          <main className="relative z-10 min-h-screen flex flex-col">
             {children}
           </main>
         </Providers>
