@@ -69,7 +69,7 @@ export function calculateStats(sessions: Session[]) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
-  let currentCheckDate = today;
+  const currentCheckDate = today;
   
   // Check if we have a session today to start the streak, otherwise check yesterday
   const hasSessionToday = sorted.some(s => {

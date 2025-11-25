@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { getSessions, calculateStats, Session } from "@/lib/api";
+import { getSessions, calculateStats } from "@/lib/api";
 
 export default function StatsPage() {
   const [stats, setStats] = useState({
